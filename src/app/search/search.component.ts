@@ -14,7 +14,7 @@ export class SearchComponent implements OnInit {
   data: any;
   step = 0;
   cities: any[] = [];
-  monitor: { [key: string]: any } = {};
+  userAuth: any = {};
 
   setStep(index: number) {
     this.step = index;
@@ -22,17 +22,18 @@ export class SearchComponent implements OnInit {
 
   private notificationSub: Subscription;
 
-  constructor(private weatherService: WeatherService, private _snackBar: MatSnackBar) {
+  constructor(private weatherService: WeatherService) {
     this.notificationSub = new Subscription();
   }
 
   ngOnInit(): void {
     this.notificationSub = this.weatherService.notificationSubject.subscribe((data: any ) => {
-      console.log(data)
       const text = `${data.forecast.dt_txt} - ${data.city} ${data.forecast.main.temp} °C, ${data.forecast.weather[0].main}`;
-      this.openSnackBar(text, 'cerrar');
+      this.weatherService.openSnackBar(text, 'cerrar');
 
     });
+    this.userAuth = this.weatherService.getUserAuth();
+    this.cities = this.userAuth.cities;
   }
 
   ngOnDestroy(): void {
@@ -46,39 +47,31 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  add(cityName: string) {
-    this.weatherService.get3HourForecast5days(cityName).subscribe((data: any) => {
-      const setForecast = (cityForecast: any) => {
-        for (const forecast of data.list) {
-          if (!cityForecast[forecast.dt_txt]) {
-            cityForecast[forecast.dt_txt] = forecast;
-          }
-        }
-        this.weatherService.notificationSubject.next({ city: cityName, forecast: data.list[0] });
-        this.monitor[cityName] = cityForecast;
-      }
-      if (!this.monitor[cityName]) {
-        const forecastList: { [key: string]: any } = {};
-        setForecast(forecastList);
-        this.cities.push(this.data);
-        if (!this.monitor[cityName]['users']) this.monitor[cityName].users = [];
-      } else {
-        setForecast(this.monitor[cityName]);
-      }
-      console.log(this.cities)
-    });
-
+  addCity(cityName: string) {
+    let cityAdded = false;
+    for (const city of this.cities) {
+      if (city.name === cityName) cityAdded = true;
+    }
+    if (!cityAdded) this.cities.push(this.data);
   }
 
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {
-      duration: 3000,
-      horizontalPosition: 'center',
+  add(cityName: string) {
+    this.weatherService.get3HourForecast5days(cityName).subscribe((data: any) => {
+      this.data['forecast'] = data.list;
+      this.addCity(cityName);
+      this.weatherService.setUserCities(this.cities);
+      this.weatherService.notificationSubject.next({ city: cityName, forecast: data.list[0] });
+      this.data = '';
     });
+
   }
 
   getForecast(cityName: string) {
-    return Object.keys(this.monitor[cityName]);
+    return Object.keys(this.data);
+  }
+
+  close() {
+    this.weatherService.closeSession();
   }
 
 }

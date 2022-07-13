@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as CryptoJS from 'crypto-js';
+import { Subscription } from 'rxjs';
 import { WeatherService } from '../weather.service';
 
 @Component({
@@ -13,9 +15,11 @@ export class LoginComponent implements OnInit {
   signUpForm: FormGroup;
   secretKey = "YourSecretKeyForEncryption&Descryption";
   loginActived: boolean = true;
-  isAuth: boolean = true;
+  isAuth: boolean = false;
 
-  constructor(private weatherService: WeatherService) { 
+  private userAuthSub: Subscription;
+
+  constructor(private weatherService: WeatherService, private _snackBar: MatSnackBar) { 
     this.login = new FormGroup({
       user: new FormControl('', Validators.required),
       pass: new FormControl('', Validators.required),
@@ -25,10 +29,18 @@ export class LoginComponent implements OnInit {
       user: new FormControl('', Validators.required),
       pass: new FormControl('', Validators.required),
     });
+    this.userAuthSub = new Subscription();
   }
 
   ngOnInit(): void {
-    
+    this.userAuthSub = this.weatherService.userAuthSubject.subscribe((data: any ) => {
+      this.isAuth = data;
+      this.weatherService.openSnackBar('Session closed ¡thank you!', 'cerrar');
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.userAuthSub.unsubscribe();
   }
 
   encrypt(value : string) : string{
@@ -42,21 +54,20 @@ export class LoginComponent implements OnInit {
   signUp() {
     const passEncrypted = this.encrypt(this.signUpForm.controls['pass'].value);
     let users = this.weatherService.getUsers();
-    users[this.signUpForm.controls['user'].value] = passEncrypted;
+    users[this.signUpForm.controls['user'].value] = { pass: passEncrypted, cities: [] };
+    console.log(users)
     localStorage.setItem('users', JSON.stringify(users));
   }
 
   signIn() {
     let users = this.weatherService.getUsers();
-    let pass = users[this.login.controls['user'].value];
-    console.log(pass)
-    console.log(this.decrypt(pass))
-    console.log(this.login.controls['pass'].value)
+    const user = this.login.controls['user'].value;
+    let pass = users[user].pass;
     if (this.decrypt(pass) === this.login.controls['pass'].value) {
-        console.log('igual')
         this.isAuth = true;
-    } else {
-      console.log(' no igual')
+        const userAuth = users[user];
+        userAuth['user'] = user;
+        localStorage.setItem('userAuth', JSON.stringify(userAuth));
     }
   }
 

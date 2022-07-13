@@ -9,8 +9,8 @@ import { InfoWeather } from '../interfaces/info-weather';
 })
 export class CitycardComponent implements OnInit {
 
-  @Input() data: InfoWeather = {name: '', main: '', weather: '', wind: ''};
-  @Input() isSearch: boolean = false;
+  @Input() forecast: InfoWeather = {name: '', main: '', weather: '', wind: ''};
+  @Input() cityName: string = '';
   @Output() add: EventEmitter<string> = new EventEmitter();
 
   constructor() { }
@@ -19,7 +19,7 @@ export class CitycardComponent implements OnInit {
   }
 
   onAdd() {
-    this.add.emit(this.data.name);
+    this.add.emit(this.cityName);
   }
 
 }

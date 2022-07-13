@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,9 +12,11 @@ export class WeatherService {
   
 
   notificationSubject: Subject<any>;
+  userAuthSubject: Subject<any>;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar) { 
     this.notificationSubject = new Subject();
+    this.userAuthSubject = new Subject();
   }
 
   getWeatherByCity(cityName: string) {
@@ -34,5 +37,32 @@ export class WeatherService {
       users =  {};
     }
     return users;
+  }
+
+  getUserAuth() {
+    let userAuth = localStorage.getItem('userAuth');
+    return userAuth ? JSON.parse(userAuth): {};
+  }
+
+  closeSession() {
+    this.userAuthSubject.next(false);
+    localStorage.removeItem('userAuth');
+  }
+
+  setUserCities(cities: any ) {
+    let userAuth = this.getUserAuth();
+    userAuth['cities'] = cities;
+    let users = this.getUsers();
+    users[userAuth.user] = userAuth;
+    console.log('asdf', users)
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('userAuth', JSON.stringify(userAuth));
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, {
+      duration: 3000,
+      horizontalPosition: 'center',
+    });
   }
 }

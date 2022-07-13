@@ -1,33 +1,41 @@
-<ng-container *ngIf="!isAuth">
-    
-    <h1> {{loginActived ? 'Sign-in': 'Sign-up'}} </h1>
-    <form [formGroup]="signUpForm" (ngSubmit)="signUp()" *ngIf="!loginActived">
-        <mat-form-field appearance="fill">
-            <mat-label>User</mat-label>
-            <input matInput  formControlName="user" >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label>Pass</mat-label>
-            <input matInput formControlName="pass" >
-        </mat-form-field>
-        
-        
-        <button mat-button color="primary" [disabled]="!signUpForm.valid">Send</button>
-        <button mat-button color="primary" (click)="loginActived = true">Sign in</button>
-    </form>
+<ng-container  *ngIf="!isAuth">
+    <div class="container">
+        <div class="login-cont">
+            <h1> {{loginActived ? 'Sign-in': 'Sign-up'}} </h1>
+            <form [formGroup]="signUpForm" (ngSubmit)="signUp()" *ngIf="!loginActived">
+                <mat-form-field appearance="fill">
+                    <mat-label>User</mat-label>
+                    <input matInput  formControlName="user" >
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Pass</mat-label>
+                    <input type="password" matInput formControlName="pass" (keydown.enter)="signUp()">
+                </mat-form-field>
+                
+                <div class="buttons">
+                    <button mat-button color="primary" (click)="loginActived = true">Sign in</button>
+                    <button mat-button color="primary" [disabled]="!signUpForm.valid">Send</button>
+                </div>
+                
+            </form>
 
-  <form [formGroup]="login" (ngSubmit)="signIn()" *ngIf="loginActived">
-    <mat-form-field appearance="fill">
-        <mat-label>User</mat-label>
-        <input matInput  formControlName="user" >
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-        <mat-label>Pass</mat-label>
-        <input matInput formControlName="pass" >
-    </mat-form-field>
-    <button mat-button color="primary" [disabled]="!login.valid">Send</button>
-    <button mat-button color="primary" (click)="loginActived = false">Sign up</button>
-  </form>
+        <form [formGroup]="login" (ngSubmit)="signIn()" *ngIf="loginActived">
+            <mat-form-field appearance="fill">
+                <mat-label>User</mat-label>
+                <input matInput  formControlName="user" >
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Pass</mat-label>
+                <input type="password" matInput formControlName="pass" (keydown.enter)="signIn()">
+            </mat-form-field>
+            <div class="buttons">
+                <button mat-button color="primary" (click)="loginActived = false">Sign up</button>
+                <button mat-button color="primary" [disabled]="!login.valid">Send</button>
+            </div>
+            
+        </form>
+        </div>
+    </div>
 </ng-container>
 
 <ng-container  *ngIf="isAuth">

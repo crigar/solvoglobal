@@ -1,42 +1,47 @@
 <div class="container">
-    <mat-form-field class="example-form-field" appearance="fill">
-        <mat-label>Clearable input</mat-label>
-        <input matInput type="text" [(ngModel)]="value">
-        <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-form-field>
-    <button mat-button color="primary" (click)="search()">Buscar</button>
+    <div class="header">
+      <div class="search">
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>City</mat-label>
+          <input matInput type="text" [(ngModel)]="value" (keydown.enter)="search()">
+          <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+              <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-button color="primary" (click)="search()">Buscar</button>
+      </div>
+      <p>User: {{userAuth.user}}</p>
+      <button mat-button color="primary" (click)="close()">Cerrar Sesion</button>
+    </div>
 
-    <app-citycard [data]="data" (add)="add($event)" [isSearch]="true" *ngIf="data"></app-citycard>
-
+    <app-citycard [forecast]="data" (add)="add($event)" *ngIf="data" [cityName]="data.name"></app-citycard>
+    <br>
     <mat-accordion class="example-headers-align">
         <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle *ngFor="let city of cities">
           <mat-expansion-panel-header >
             <mat-panel-title>
-              {{city.name}}
+              <p>{{city.name}}</p>
             </mat-panel-title>
             <mat-panel-description>
-              {{city.main.temp}} °C
+              <p>{{city.main.temp}} °C</p>
             </mat-panel-description>
           </mat-expansion-panel-header>
       
             <div class="body-panel">
-                <app-citycard [data]="data" ></app-citycard>
-                
-
                 <mat-accordion class="example-headers-align"class="forecast">
-                    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle *ngFor="let date of getForecast(city.name)">
+                    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle *ngFor="let forecast of city.forecast">
                       <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          {{date | date: 'medium'}}
+                        <mat-panel-title class="title">
+                          <p>{{forecast.dt_txt | date: 'medium'}} </p>
+                          <p>{{forecast.main?.temp}} °C</p>
                         </mat-panel-title>
                         <mat-panel-description>
-                          {{monitor[date] }}
+                          
+                          
                         </mat-panel-description>
                       </mat-expansion-panel-header>
                   
-                       asdfsadf
+                      <app-citycard [forecast]="forecast" [cityName]="city.name" ></app-citycard>
                       
                     </mat-expansion-panel>
                   
