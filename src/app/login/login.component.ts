@@ -55,8 +55,8 @@ export class LoginComponent implements OnInit {
     const passEncrypted = this.encrypt(this.signUpForm.controls['pass'].value);
     let users = this.weatherService.getUsers();
     users[this.signUpForm.controls['user'].value] = { pass: passEncrypted, cities: [] };
-    console.log(users)
     localStorage.setItem('users', JSON.stringify(users));
+    this.weatherService.openSnackBar('User: ' + this.signUpForm.controls['user'].value + ' created!' , 'Cerrar');
   }
 
   signIn() {
@@ -68,6 +68,7 @@ export class LoginComponent implements OnInit {
         const userAuth = users[user];
         userAuth['user'] = user;
         localStorage.setItem('userAuth', JSON.stringify(userAuth));
+        this.weatherService.openSnackBar('Welcome!', 'Cerrar');
     }
   }
 

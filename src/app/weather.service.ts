@@ -54,7 +54,6 @@ export class WeatherService {
     userAuth['cities'] = cities;
     let users = this.getUsers();
     users[userAuth.user] = userAuth;
-    console.log('asdf', users)
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('userAuth', JSON.stringify(userAuth));
   }
