@@ -1,0 +1,37 @@
+<ng-container *ngIf="!isAuth">
+    
+    <h1> {{loginActived ? 'Sign-in': 'Sign-up'}} </h1>
+    <form [formGroup]="signUpForm" (ngSubmit)="signUp()" *ngIf="!loginActived">
+        <mat-form-field appearance="fill">
+            <mat-label>User</mat-label>
+            <input matInput  formControlName="user" >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Pass</mat-label>
+            <input matInput formControlName="pass" >
+        </mat-form-field>
+        
+        
+        <button mat-button color="primary" [disabled]="!signUpForm.valid">Send</button>
+        <button mat-button color="primary" (click)="loginActived = true">Sign in</button>
+    </form>
+
+  <form [formGroup]="login" (ngSubmit)="signIn()" *ngIf="loginActived">
+    <mat-form-field appearance="fill">
+        <mat-label>User</mat-label>
+        <input matInput  formControlName="user" >
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Pass</mat-label>
+        <input matInput formControlName="pass" >
+    </mat-form-field>
+    <button mat-button color="primary" [disabled]="!login.valid">Send</button>
+    <button mat-button color="primary" (click)="loginActived = false">Sign up</button>
+  </form>
+</ng-container>
+
+<ng-container  *ngIf="isAuth">
+    <app-search></app-search>
+</ng-container>
+
+

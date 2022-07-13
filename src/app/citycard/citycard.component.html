@@ -1,0 +1,12 @@
+<mat-card class="example-card card" [ngStyle]="{'background-image': 'url(https://source.unsplash.com/1300x230/?' + data.name + ')'}">
+    <mat-card-title-group *ngIf="isSearch">
+        <mat-card-title>{{data.name}}  <button mat-button (click)="onAdd()">Add</button></mat-card-title>
+        <mat-card-subtitle class="subtitle">{{data.main?.temp}} °C</mat-card-subtitle>
+    </mat-card-title-group>
+    <mat-card-content >
+        <img mat-card-image [src]="'http://openweathermap.org/img/w/'+ data.weather[0].icon + '.png'"  class="img-clouds">
+        {{  data.weather ? data.weather[0]?.description: '' }}
+        <p>Humidity: {{data.main?.humidity}}</p>
+        <p>Wind Speed: {{data.wind?.speed}} km/h</p>
+    </mat-card-content>
+</mat-card>

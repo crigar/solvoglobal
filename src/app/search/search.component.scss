@@ -1,0 +1,14 @@
+
+
+.body-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.info {
+    min-width: 300px;
+}
+
+.forecast {
+    flex: 1;
+}

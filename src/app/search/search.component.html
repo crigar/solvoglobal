@@ -1,0 +1,52 @@
+<div class="container">
+    <mat-form-field class="example-form-field" appearance="fill">
+        <mat-label>Clearable input</mat-label>
+        <input matInput type="text" [(ngModel)]="value">
+        <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <button mat-button color="primary" (click)="search()">Buscar</button>
+
+    <app-citycard [data]="data" (add)="add($event)" [isSearch]="true" *ngIf="data"></app-citycard>
+
+    <mat-accordion class="example-headers-align">
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle *ngFor="let city of cities">
+          <mat-expansion-panel-header >
+            <mat-panel-title>
+              {{city.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{city.main.temp}} °C
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+      
+            <div class="body-panel">
+                <app-citycard [data]="data" ></app-citycard>
+                
+
+                <mat-accordion class="example-headers-align"class="forecast">
+                    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle *ngFor="let date of getForecast(city.name)">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{date | date: 'medium'}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                          {{monitor[date] }}
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+                  
+                       asdfsadf
+                      
+                    </mat-expansion-panel>
+                  
+                  </mat-accordion>
+            </div>
+          
+        </mat-expansion-panel>
+      
+      </mat-accordion>
+
+    
+</div>
+
